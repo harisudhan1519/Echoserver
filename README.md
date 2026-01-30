@@ -27,37 +27,48 @@ Serving the HTML pages.
 Testing the webserver
 
 ## PROGRAM:
+
+client.py
+
 ```
-from http.server import HTTPServer,BaseHTTPRequestHandler
-
-content='''
-<!doctype html>
-<html>
-<head>
-<title> My Web Server</title>
-</head>
-<body>
-<h1>Top Five Web Application Development Frameworks</h1>
-<h2>1.Django</h2>
-<h2>2. MEAN Stack</h2>
-<h2>3. React </h2>
-</body>
-</html>
+import socket
 
 
-class MyServer(BaseHTTPRequestHandler):
-    def do_GET(self):
-        print("Get request received...")
-        self.send_response(200) 
-        self.send_header("content-type", "text/html")       
-        self.end_headers()
-        self.wfile.write(content.encode())
+HOST = "127.0.0.1"  
+PORT = 65432 
 
-print("This is my webserver") 
-server_address =('keerthi',2323)
-httpd = HTTPServer(server_address,MyServer)
-httpd.serve_forever()
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    s.sendall(b"Harisudhan S , 212224240048")
+    data = s.recv(1024)
+
+
+print(f"Received {data!r}")
+
 ```
+server.py
+```
+import socket
+
+
+HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen()
+    conn, addr = s.accept()
+    with conn:
+        print(f"Connected by {addr}")
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
+            conn.sendall(data)
+
+
 ##  Architecture Diagram
 
 ```bash
@@ -87,8 +98,12 @@ httpd.serve_forever()
 
 ## OUTPUT:
 ### CLIENT OUTPUT:
+<img width="1536" height="1024" alt="clientoutput" src="https://github.com/user-attachments/assets/eeabd175-fe47-45fd-a578-c135d60cd1d1" />
+
 
 ### SERVER OUTPUT:
+<img width="1536" height="1024" alt="serveroutput" src="https://github.com/user-attachments/assets/d4c1d60e-0584-45d4-a359-0e0374e246bd" />
+
 
 ## RESULT:
 The program is executed succesfully
